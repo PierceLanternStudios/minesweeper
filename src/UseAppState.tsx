@@ -24,6 +24,16 @@ export type Action =
       board: Board;
     };
 
+/**
+ * useAppState
+ *
+ * A custom react hook designed to handle creation of the app state.
+ * This will initialize state to the value returned by getInitialState().
+ * @returns A react hook that can be called within App.tsx to generate
+ *          state.
+ * @note    This hook must be called before any other hooks that rely
+ *          on the existence of state!
+ */
 export default function useAppState(): [State, Dispatch<Action>] {
   return React.useReducer(reducer, null, getInitialState);
 }
@@ -56,6 +66,13 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+/**
+ * getInitialState
+ *
+ * A function that returns the default value of the game state,
+ * for use during initialization of the state.
+ * @returns     The default value of state.
+ */
 function getInitialState(): State {
   return { phase: "pre-game", board: null };
 }

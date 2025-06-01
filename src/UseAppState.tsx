@@ -1,6 +1,5 @@
 import React, { Dispatch } from "react";
 import { Board } from "./Board";
-import { stripVTControlCharacters } from "util";
 
 export type State =
   | {
@@ -108,7 +107,7 @@ function revealTile(currentBoard: Board, row: number, col: number): Board {
   let localMines = 0;
   for (let i = -1; i < 2; i++) {
     for (let j = -1; j < 2; j++) {
-      if (currentBoard.mines[row + i][col + j] ?? false) localMines++;
+      if (currentBoard.mines[row + i]?.[col + j] ?? false) localMines++;
     }
   }
   //update relevant square + return out

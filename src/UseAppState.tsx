@@ -102,6 +102,23 @@ function getInitialState(): State {
   return { phase: "pre-game", board: null };
 }
 
+/**
+ * revealTile
+ *
+ * Used to reveal a tile when it has been clicked and is determined to not
+ * be a bomb. Handles the logic of determining what number to show, and
+ * then returns the most up-to-date board (updating the display array).
+ * @param currentBoard    Takes in the current board to use when determining
+ *                        what number to show and what display information
+ *                        has already been revealed
+ * @param row             The row index of the clicked-on square
+ * @param col             The column index of the clicked-on square
+ * @returns               A new board object with the most up-to-date display
+ *                        information.
+ * @note                  Note that this assumes the player clicked a square
+ *                        that is not a bomb! The check for is-a-bomb must
+ *                        happen before this.
+ */
 function revealTile(currentBoard: Board, row: number, col: number): Board {
   // count mines near revealed tile:
   let localMines = 0;

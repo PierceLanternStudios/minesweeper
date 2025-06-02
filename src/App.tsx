@@ -44,6 +44,18 @@ function App() {
   }
 }
 
+/**
+ * renderBoard
+ *
+ * A helper function to render an array of buttons as the board based on
+ * the current state.
+ *
+ * @param board       The board to render as buttons.
+ * @param dispatch    The dispatch function used whenever a button is
+ *                    pressed to handle the changes in state.
+ * @returns           A div component containing the array of buttons
+ *                    to display as the board.
+ */
 function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
   return (
     <div>

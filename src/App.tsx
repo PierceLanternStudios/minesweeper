@@ -38,6 +38,14 @@ function App() {
     case "post-game":
       return (
         <div>
+          <button onClick={() => dispatch({ type: "start-game" })}>
+            Restart
+          </button>
+          <button
+            onClick={() => dispatch({ type: "set-seed", seed: Math.random() })}
+          >
+            Randomize Board
+          </button>
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );

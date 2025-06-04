@@ -138,6 +138,18 @@ function revealTile(
   return currentBoard;
 }
 
+/**
+ * calculateTile
+ *
+ * A helper function that is used to count the correct display number
+ * for a given tile. Returns an integer 0-8 if the tile indices are valid,
+ * or -1 if they are out of bounds.
+ * @param currentBoard  A reference to the current board.
+ * @param row           The row index to calculate.
+ * @param col           The column index to calculate.
+ * @returns             The number of mines surrounding that tile, or -1
+ *                      if the provided indices are out-of-bounds.
+ */
 function calculateTile(currentBoard: Board, row: number, col: number): number {
   //make sure row/col are in bounds:
   if (
@@ -159,7 +171,20 @@ function calculateTile(currentBoard: Board, row: number, col: number): number {
   return localMines;
 }
 
-//TODO: test this lol
+/**
+ * propogateZeros
+ *
+ * Function that reveals all tiles surrounding a tile of value 0.
+ * Does this via the "revealTile" function, which will recursively
+ * call this function again on any further revealed zeros, propogating
+ * across the entire zero clump.
+ * @param currentBoard  A reference to the current board to update the
+ *                      display of.
+ * @param row           The row index of the zero tile to propogate
+ *                      from.
+ * @param col           The column index of the zero tile to propogate
+ *                      from.
+ */
 function propogateZeros(currentBoard: Board, row: number, col: number) {
   // double check that the pointed-out square is a zero:
   if (currentBoard.display[row][col] !== 0) return;

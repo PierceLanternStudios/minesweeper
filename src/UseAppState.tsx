@@ -4,18 +4,18 @@ import { Board } from "./Board";
 export type State =
   | {
       phase: "pre-game";
-      board: Board | null;
       seed: number;
+      board: Board | null;
     }
   | {
       phase: "in-game";
-      board: Board;
       seed: number;
+      board: Board;
     }
   | {
       phase: "post-game";
-      board: Board;
       seed: number;
+      board: Board;
     };
 
 export type Action =
@@ -110,7 +110,7 @@ function reducer(state: State, action: Action): State {
  * @returns     The default value of state.
  */
 function getInitialState(): State {
-  return { phase: "pre-game", board: null, seed: Math.random() };
+  return { phase: "pre-game", seed: Math.random(), board: null };
 }
 
 /**

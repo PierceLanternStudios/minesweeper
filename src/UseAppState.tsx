@@ -30,6 +30,10 @@ export type Action =
       type: "reveal-tile";
       row: number;
       col: number;
+    }
+  | {
+      type: "set-seed";
+      seed: number;
     };
 
 /**
@@ -91,6 +95,10 @@ function reducer(state: State, action: Action): State {
           ...state,
           board: revealTile(state.board, action.row, action.col),
         };
+
+    case "set-seed": {
+      return { ...state, seed: action.seed };
+    }
   }
 }
 

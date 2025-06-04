@@ -113,13 +113,42 @@ function getInitialState(): State {
  *                        has already been revealed
  * @param row             The row index of the clicked-on square
  * @param col             The column index of the clicked-on square
+ * @param mines           An optional parameter containing the number of mines
+ *                        to display. This parameter should only be set if the
+ *                        correct display number has already been calculated
+ *                        and cached, to prevent recalculation here.
  * @returns               A new board object with the most up-to-date display
  *                        information.
  * @note                  Note that this assumes the player clicked a square
  *                        that is not a bomb! The check for is-a-bomb must
  *                        happen before this.
  */
-function revealTile(currentBoard: Board, row: number, col: number): Board {
+function revealTile(
+  currentBoard: Board,
+  row: number,
+  col: number,
+  mines: number = -1
+): Board {
+  // count mines near revealed tile:
+  if (mines === -1) mines = calculateTile(currentBoard, row, col);
+
+  //update relevant square + propogate zeros:
+  currentBoard.display[row][col] = mines;
+  if (mines === 0) propogateZeros(currentBoard, row, col);
+  return currentBoard;
+}
+
+function calculateTile(currentBoard: Board, row: number, col: number): number {
+  //make sure row/col are in bounds:
+  if (
+    row >= currentBoard.display.length ||
+    row < 0 ||
+    col >= currentBoard.display[0].length ||
+    col < 0
+  )
+    return -1;
+
+  // otherwise, perform calculation as normal:
   // count mines near revealed tile:
   let localMines = 0;
   for (let i = -1; i < 2; i++) {
@@ -127,7 +156,19 @@ function revealTile(currentBoard: Board, row: number, col: number): Board {
       if (currentBoard.mines[row + i]?.[col + j] ?? false) localMines++;
     }
   }
-  //update relevant square + return out
-  currentBoard.display[row][col] = localMines;
-  return currentBoard;
+  return localMines;
+}
+
+//TODO: test this lol
+function propogateZeros(currentBoard: Board, row: number, col: number) {
+  // double check that the pointed-out square is a zero:
+  if (currentBoard.display[row][col] !== 0) return;
+
+  // otherwise, reveal all the adjacent squares:
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
+      if ((currentBoard.display[row + i]?.[col + j] ?? false) === -1)
+        revealTile(currentBoard, row + i, col + j);
+    }
+  }
 }

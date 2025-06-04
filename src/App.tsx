@@ -67,7 +67,9 @@ function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
                 dispatch({ type: "reveal-tile", row: rowIdx, col: colIdx })
               }
             >
-              {board.display[rowIdx][colIdx] === -1
+              {board.mines[rowIdx][colIdx]
+                ? "#"
+                : board.display[rowIdx][colIdx] === -1
                 ? " "
                 : board.display[rowIdx][colIdx]}
             </button>

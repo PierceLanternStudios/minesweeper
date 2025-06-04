@@ -12,7 +12,7 @@ import useLoadBoard from "./useLoadBoard";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(dispatch, 10);
+  useLoadBoard(state, dispatch, 10);
 
   switch (state.phase) {
     case "pre-game":

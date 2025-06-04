@@ -5,14 +5,17 @@ export type State =
   | {
       phase: "pre-game";
       board: Board | null;
+      seed: number;
     }
   | {
       phase: "in-game";
       board: Board;
+      seed: number;
     }
   | {
       phase: "post-game";
       board: Board;
+      seed: number;
     };
 
 export type Action =
@@ -99,7 +102,7 @@ function reducer(state: State, action: Action): State {
  * @returns     The default value of state.
  */
 function getInitialState(): State {
-  return { phase: "pre-game", board: null };
+  return { phase: "pre-game", board: null, seed: Math.random() };
 }
 
 /**

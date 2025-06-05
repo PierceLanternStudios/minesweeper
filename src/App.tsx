@@ -12,7 +12,7 @@ import useLoadBoard from "./useLoadBoard";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(dispatch, 10);
+  useLoadBoard(state, dispatch, 10);
 
   switch (state.phase) {
     case "pre-game":
@@ -38,6 +38,14 @@ function App() {
     case "post-game":
       return (
         <div>
+          <button onClick={() => dispatch({ type: "start-game" })}>
+            Restart
+          </button>
+          <button
+            onClick={() => dispatch({ type: "set-seed", seed: Math.random() })}
+          >
+            Randomize Board
+          </button>
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );
@@ -67,7 +75,9 @@ function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
                 dispatch({ type: "reveal-tile", row: rowIdx, col: colIdx })
               }
             >
-              {board.display[rowIdx][colIdx] === -1
+              {board.mines[rowIdx][colIdx]
+                ? "#"
+                : board.display[rowIdx][colIdx] === -1
                 ? " "
                 : board.display[rowIdx][colIdx]}
             </button>

@@ -1,7 +1,7 @@
 import { useEffect, Dispatch } from "react";
 import { Board } from "./Board";
-import { Action } from "./UseAppState";
-
+import { State, Action } from "./UseAppState";
+import seedrandom from "seedrandom";
 /**
  * useLoadBoard
  *
@@ -14,12 +14,16 @@ import { Action } from "./UseAppState";
  * @returns           A hook that can be called to generate a board in state
  *                    from within App.tsx
  */
-export default function useLoadBoard(dispatch: Dispatch<Action>, size: number) {
+export default function useLoadBoard(
+  state: State,
+  dispatch: Dispatch<Action>,
+  size: number
+) {
   return useEffect(() => {
     setTimeout(() => {
-      dispatch({ type: "load-board", board: generateBoard(size) });
+      dispatch({ type: "load-board", board: generateBoard(size, state.seed) });
     }, 500);
-  }, [dispatch]);
+  }, [dispatch, state.seed]);
 }
 
 /**
@@ -30,13 +34,15 @@ export default function useLoadBoard(dispatch: Dispatch<Action>, size: number) {
  *                the board to generate from
  * @returns       A new board object
  */
-function generateBoard(size: number): Board {
+function generateBoard(size: number, seed: number): Board {
+  const rng = seedrandom(seed.toString());
+
   const BOMB_FREQUENCY = 0.25;
   const board: Board = {
     mines: Array.from({ length: size }, () =>
       Array(size)
         .fill(false)
-        .map(() => Math.random() < BOMB_FREQUENCY)
+        .map(() => rng() < BOMB_FREQUENCY)
     ),
     display: Array.from({ length: size }, () => Array(size).fill(-1)),
   };

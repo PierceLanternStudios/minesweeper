@@ -45,6 +45,7 @@ function generateBoard(size: number, seed: number): Board {
         .map(() => rng() < BOMB_FREQUENCY)
     ),
     display: Array.from({ length: size }, () => Array(size).fill(-1)),
+    flags: Array.from({ length: size }, () => Array(size).fill(false)),
   };
 
   return board;

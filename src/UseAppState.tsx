@@ -32,6 +32,11 @@ export type Action =
       col: number;
     }
   | {
+      type: "flag-tile";
+      row: number;
+      col: number;
+    }
+  | {
       type: "set-seed";
       seed: number;
     };
@@ -80,12 +85,14 @@ function reducer(state: State, action: Action): State {
     Reveal tile case.
     No-Ops if:
       - Phase not in game
+      - Tile is flagged
 
       Otherwise:
         - determines what should happen if a tile is clicked.
     */
     case "reveal-tile":
       if (state.phase !== "in-game") return state;
+      if (state.board.flags[action.row][action.col]) return state;
       //check if player lost the game
       else if (state.board.mines[action.row][action.col])
         return { ...state, phase: "post-game" };
@@ -95,6 +102,25 @@ function reducer(state: State, action: Action): State {
           ...state,
           board: revealTile(state.board, action.row, action.col),
         };
+
+    /*
+    Flag tile case.
+    No-Ops if:
+      - Tile is already revealed
+      - Phase is wrong
+
+      Otherwise:
+        - determines what should happen if a tile is flagged.
+    */
+    case "flag-tile": {
+      if (
+        state.phase !== "in-game" ||
+        state.board.display[action.row][action.col] !== -1
+      )
+        return state;
+
+      return { ...state, board: flagTile(state.board, action.row, action.col) };
+    }
 
     case "set-seed": {
       return { ...state, seed: action.seed };
@@ -147,6 +173,37 @@ function revealTile(
   currentBoard.display[row][col] = mines;
   if (mines === 0) propogateZeros(currentBoard, row, col);
   return currentBoard;
+}
+
+/**
+ * flagTile
+ *
+ * A function used to determine the new board object if a flag is
+ * being placed or removed. Effectively, this function just inverts
+ * the state of a flag tile (places one if it is not there, and
+ * removes it otherwise). This function assumes that a flag can be
+ * placed on the tile (i.e, the tile is not already revealed), but
+ * will ensure that the location is valid before placing the flag.
+ * If the location is invalid, this function will simply return the
+ * original board with no changes.
+ * @param board     The board object to modify with the updated flags.
+ * @param row       The row at which to add the flag
+ * @param col       The column in which to add the flag
+ * @returns         The original board if the row/col are invalid, or
+ *                  A modified board containing the updated flags
+ *                  otherwise.
+ */
+function flagTile(board: Board, row: number, col: number): Board {
+  if (
+    row >= board.display.length ||
+    row < 0 ||
+    col >= board.display[0].length ||
+    col < 0
+  )
+    return board;
+
+  board.mines[row][col] = !board.mines[row][col];
+  return board;
 }
 
 /**

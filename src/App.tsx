@@ -1,5 +1,6 @@
 import "./App.css";
 import { Board } from "./Board";
+import gameTileButton from "./GameTile";
 import useAppState, { State, Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
 
@@ -69,19 +70,9 @@ function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
     <div>
       {board.display.map((row, rowIdx) => (
         <div>
-          {row.map((col, colIdx) => (
-            <button
-              onClick={() =>
-                dispatch({ type: "reveal-tile", row: rowIdx, col: colIdx })
-              }
-            >
-              {board.mines[rowIdx][colIdx]
-                ? "#"
-                : board.display[rowIdx][colIdx] === -1
-                ? " "
-                : board.display[rowIdx][colIdx]}
-            </button>
-          ))}
+          {row.map((col, colIdx) =>
+            gameTileButton(dispatch, board, rowIdx, colIdx)
+          )}
         </div>
       ))}
     </div>

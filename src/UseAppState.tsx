@@ -122,6 +122,17 @@ function reducer(state: State, action: Action): State {
       return { ...state, board: flagTile(state.board, action.row, action.col) };
     }
 
+    /*
+    Set seed case
+    No-Ops if:
+      - Phase is in-game
+
+    Otherwise:
+      - Updates the seed of the game.
+      - This will trigger an immediate re-calculation of
+        the board and all data from the previous board 
+        will be lost.
+    */
     case "set-seed": {
       return { ...state, seed: action.seed };
     }
@@ -202,8 +213,14 @@ function flagTile(board: Board, row: number, col: number): Board {
   )
     return board;
 
-  board.mines[row][col] = !board.mines[row][col];
-  return board;
+  return {
+    ...board,
+    flags: board.flags.map((oldRow, rowIdx) =>
+      rowIdx === row
+        ? oldRow.map((flag, colIdx) => (colIdx === col ? !flag : flag))
+        : oldRow
+    ),
+  };
 }
 
 /**

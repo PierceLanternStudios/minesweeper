@@ -2,6 +2,9 @@ import { useEffect, Dispatch } from "react";
 import { Board } from "./Board";
 import { State, Action } from "./UseAppState";
 import seedrandom from "seedrandom";
+
+const BOMB_FREQUENCY = 0.2;
+
 /**
  * useLoadBoard
  *
@@ -37,7 +40,6 @@ export default function useLoadBoard(
 function generateBoard(size: number, seed: number): Board {
   const rng = seedrandom(seed.toString());
 
-  const BOMB_FREQUENCY = 0.25;
   const board: Board = {
     mines: Array.from({ length: size }, () =>
       Array(size)

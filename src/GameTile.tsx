@@ -2,6 +2,7 @@ import { Dispatch } from "react";
 import { Action } from "./UseAppState";
 import { Board } from "./Board";
 import TileCSS from "./Tile.module.css";
+import { COLORS } from "./Colors";
 
 /**
  * gameTileButton
@@ -33,13 +34,18 @@ export default function gameTileButton(
     }
   };
 
+  const tileVal = renderTile(board, row, col);
   return (
     <button
       onClick={handleClick}
       onContextMenu={handleClick}
       className={TileCSS.tile}
+      style={{
+        color: COLORS[tileVal as keyof typeof COLORS] ?? "black",
+        backgroundColor: board.display[row][col] === -1 ? "#428f07" : "#c9bf7b",
+      }}
     >
-      {renderTile(board, row, col)}
+      {tileVal}
     </button>
   );
 }
@@ -58,5 +64,5 @@ function renderTile(board: Board, row: number, col: number): string {
   if (board.display[row][col] !== -1) return board.display[row][col].toString();
   if (board.flags[row][col]) return "🚩";
   // if (board.mines[row][col]) return "💣"; // DEBUG: REMOVE THIS EVENTUALLY
-  return "__";
+  return "";
 }

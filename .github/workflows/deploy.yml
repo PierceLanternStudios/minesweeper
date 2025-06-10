@@ -1,0 +1,60 @@
+name: Deploy React App
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    ########################################################
+    # UPDATE THIS WITH REPOSITORY NAME!!!
+    ########################################################
+    if: github.repository == 'piercelanternstudios/minesweeper'
+
+    environment:
+      name: build-and-deploy
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # TODO: replace with latest, it was causing some Yarn checksum issues recently though
+          node-version: 23
+          cache: yarn
+          cache-dependency-path: ./yarn.lock
+
+      - name: Install dependencies
+        run: yarn --immutable
+        shell: bash
+
+      - name: Build app
+        run: yarn build
+
+        env:
+          NODE_ENV: production
+          PUBLIC_URL: ${{ steps.deployment.outputs.page_url }} #/word-scramble/
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

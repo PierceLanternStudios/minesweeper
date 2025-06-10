@@ -14,6 +14,7 @@ export type State =
     }
   | {
       phase: "post-game";
+      playerWin: boolean;
       seed: number;
       board: Board;
     };
@@ -28,6 +29,11 @@ export type Action =
     }
   | {
       type: "reveal-tile";
+      row: number;
+      col: number;
+    }
+  | {
+      type: "flag-tile";
       row: number;
       col: number;
     }
@@ -80,15 +86,17 @@ function reducer(state: State, action: Action): State {
     Reveal tile case.
     No-Ops if:
       - Phase not in game
+      - Tile is flagged
 
       Otherwise:
         - determines what should happen if a tile is clicked.
     */
     case "reveal-tile":
       if (state.phase !== "in-game") return state;
+      if (state.board.flags[action.row][action.col]) return state;
       //check if player lost the game
       else if (state.board.mines[action.row][action.col])
-        return { ...state, phase: "post-game" };
+        return { ...state, phase: "post-game", playerWin: false };
       // otherwise reveal the tile:
       else
         return {
@@ -96,6 +104,52 @@ function reducer(state: State, action: Action): State {
           board: revealTile(state.board, action.row, action.col),
         };
 
+    /*
+    Flag tile case.
+    No-Ops if:
+      - Tile is already revealed
+      - Phase is wrong
+
+      Otherwise:
+        - determines what should happen if a tile is flagged.
+        - If this is the last flag (and the flags match the mines),
+          then the player has won the game and the postgame will be
+          displayed.
+        - Otherwise, the tile is flagged.
+    */
+    case "flag-tile": {
+      if (
+        state.phase !== "in-game" ||
+        state.board.display[action.row][action.col] !== -1
+      )
+        return state;
+
+      const flaggedBoard = flagTile(state.board, action.row, action.col);
+
+      //end game if the player has won
+      if (flaggedBoard.flags.toString() === flaggedBoard.mines.toString())
+        return {
+          ...state,
+          phase: "post-game",
+          board: flaggedBoard,
+          playerWin: true,
+        };
+
+      // otherwise flag the tile and move on
+      return { ...state, board: flagTile(state.board, action.row, action.col) };
+    }
+
+    /*
+    Set seed case
+    No-Ops if:
+      - Phase is in-game
+
+    Otherwise:
+      - Updates the seed of the game.
+      - This will trigger an immediate re-calculation of
+        the board and all data from the previous board 
+        will be lost.
+    */
     case "set-seed": {
       return { ...state, seed: action.seed };
     }
@@ -147,6 +201,43 @@ function revealTile(
   currentBoard.display[row][col] = mines;
   if (mines === 0) propogateZeros(currentBoard, row, col);
   return currentBoard;
+}
+
+/**
+ * flagTile
+ *
+ * A function used to determine the new board object if a flag is
+ * being placed or removed. Effectively, this function just inverts
+ * the state of a flag tile (places one if it is not there, and
+ * removes it otherwise). This function assumes that a flag can be
+ * placed on the tile (i.e, the tile is not already revealed), but
+ * will ensure that the location is valid before placing the flag.
+ * If the location is invalid, this function will simply return the
+ * original board with no changes.
+ * @param board     The board object to modify with the updated flags.
+ * @param row       The row at which to add the flag
+ * @param col       The column in which to add the flag
+ * @returns         The original board if the row/col are invalid, or
+ *                  A modified board containing the updated flags
+ *                  otherwise.
+ */
+function flagTile(board: Board, row: number, col: number): Board {
+  if (
+    row >= board.display.length ||
+    row < 0 ||
+    col >= board.display[0].length ||
+    col < 0
+  )
+    return board;
+
+  return {
+    ...board,
+    flags: board.flags.map((oldRow, rowIdx) =>
+      rowIdx === row
+        ? oldRow.map((flag, colIdx) => (colIdx === col ? !flag : flag))
+        : oldRow
+    ),
+  };
 }
 
 /**

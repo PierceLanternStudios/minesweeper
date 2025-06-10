@@ -1,7 +1,10 @@
 import "./App.css";
 import { Board } from "./Board";
-import useAppState, { State, Action } from "./UseAppState";
+import gameTileButton from "./GameTile";
+import useAppState, { Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
+import BoardCSS from "./Board.module.css";
+import reportWebVitals from "./reportWebVitals";
 
 /**
  * App
@@ -12,7 +15,7 @@ import useLoadBoard from "./useLoadBoard";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(state, dispatch, 10);
+  useLoadBoard(state, dispatch, 2);
 
   switch (state.phase) {
     case "pre-game":
@@ -38,6 +41,7 @@ function App() {
     case "post-game":
       return (
         <div>
+          <h3>{state.playerWin ? "You Won!" : "You Lost!"}</h3>
           <button onClick={() => dispatch({ type: "start-game" })}>
             Restart
           </button>
@@ -66,22 +70,17 @@ function App() {
  */
 function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
   return (
-    <div>
+    <div
+      className={BoardCSS.board}
+      style={{
+        gridTemplateColumns: "repeat(" + board.display.length + ", 50px)",
+      }}
+    >
       {board.display.map((row, rowIdx) => (
-        <div>
-          {row.map((col, colIdx) => (
-            <button
-              onClick={() =>
-                dispatch({ type: "reveal-tile", row: rowIdx, col: colIdx })
-              }
-            >
-              {board.mines[rowIdx][colIdx]
-                ? "#"
-                : board.display[rowIdx][colIdx] === -1
-                ? " "
-                : board.display[rowIdx][colIdx]}
-            </button>
-          ))}
+        <div className={BoardCSS.board_row} key={rowIdx}>
+          {row.map((col, colIdx) =>
+            gameTileButton(dispatch, board, rowIdx, colIdx)
+          )}
         </div>
       ))}
     </div>

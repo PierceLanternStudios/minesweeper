@@ -26,7 +26,7 @@ export default function useLoadBoard(
     setTimeout(() => {
       dispatch({ type: "load-board", board: generateBoard(size, state.seed) });
     }, 500);
-  }, [dispatch, state.seed]);
+  }, [dispatch, state.seed, size]);
 }
 
 /**

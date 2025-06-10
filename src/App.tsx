@@ -4,7 +4,6 @@ import gameTileButton from "./GameTile";
 import useAppState, { Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
 import BoardCSS from "./Board.module.css";
-import reportWebVitals from "./reportWebVitals";
 
 /**
  * App

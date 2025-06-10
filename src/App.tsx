@@ -85,5 +85,4 @@ function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
     </div>
   );
 }
-
 export default App;

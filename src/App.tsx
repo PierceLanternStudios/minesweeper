@@ -15,7 +15,7 @@ import reportWebVitals from "./reportWebVitals";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(state, dispatch, 10);
+  useLoadBoard(state, dispatch, 2);
 
   switch (state.phase) {
     case "pre-game":
@@ -41,6 +41,7 @@ function App() {
     case "post-game":
       return (
         <div>
+          <h3>{state.playerWin ? "You Won!" : "You Lost!"}</h3>
           <button onClick={() => dispatch({ type: "start-game" })}>
             Restart
           </button>

@@ -14,6 +14,7 @@ export type State =
     }
   | {
       phase: "post-game";
+      playerWin: boolean;
       seed: number;
       board: Board;
     };
@@ -95,7 +96,7 @@ function reducer(state: State, action: Action): State {
       if (state.board.flags[action.row][action.col]) return state;
       //check if player lost the game
       else if (state.board.mines[action.row][action.col])
-        return { ...state, phase: "post-game" };
+        return { ...state, phase: "post-game", playerWin: false };
       // otherwise reveal the tile:
       else
         return {
@@ -111,6 +112,10 @@ function reducer(state: State, action: Action): State {
 
       Otherwise:
         - determines what should happen if a tile is flagged.
+        - If this is the last flag (and the flags match the mines),
+          then the player has won the game and the postgame will be
+          displayed.
+        - Otherwise, the tile is flagged.
     */
     case "flag-tile": {
       if (
@@ -119,6 +124,18 @@ function reducer(state: State, action: Action): State {
       )
         return state;
 
+      const flaggedBoard = flagTile(state.board, action.row, action.col);
+
+      //end game if the player has won
+      if (flaggedBoard.flags.toString() === flaggedBoard.mines.toString())
+        return {
+          ...state,
+          phase: "post-game",
+          board: flaggedBoard,
+          playerWin: true,
+        };
+
+      // otherwise flag the tile and move on
       return { ...state, board: flagTile(state.board, action.row, action.col) };
     }
 

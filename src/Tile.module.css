@@ -1,4 +1,6 @@
 .tile {
   aspect-ratio: 1;
   font-size: large;
+  border-radius: 5px;
+  border: 2px rgb(99, 111, 145) solid;
 }

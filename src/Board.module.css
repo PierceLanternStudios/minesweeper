@@ -1,6 +1,6 @@
 .board {
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 
 .board_row {

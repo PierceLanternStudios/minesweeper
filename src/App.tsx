@@ -14,7 +14,7 @@ import BoardCSS from "./Board.module.css";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(state, dispatch, 2);
+  useLoadBoard(state, dispatch, 10);
 
   switch (state.phase) {
     case "pre-game":

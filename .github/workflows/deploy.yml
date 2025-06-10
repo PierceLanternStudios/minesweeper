@@ -18,6 +18,9 @@ jobs:
     ########################################################
     # UPDATE THIS WITH REPOSITORY NAME!!!
     ########################################################
+    env:
+      REPO_NAME: minesweeper
+
     if: github.repository == 'piercelanternstudios/minesweeper'
 
     environment:

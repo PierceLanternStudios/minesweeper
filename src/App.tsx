@@ -1,8 +1,10 @@
 import "./App.css";
 import { Board } from "./Board";
 import gameTileButton from "./GameTile";
-import useAppState, { State, Action } from "./UseAppState";
+import useAppState, { Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
+import BoardCSS from "./Board.module.css";
+import reportWebVitals from "./reportWebVitals";
 
 /**
  * App
@@ -67,9 +69,14 @@ function App() {
  */
 function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
   return (
-    <div>
+    <div
+      className={BoardCSS.board}
+      style={{
+        gridTemplateColumns: "repeat(" + board.display.length + ", 50px)",
+      }}
+    >
       {board.display.map((row, rowIdx) => (
-        <div>
+        <div className={BoardCSS.board_row} key={rowIdx}>
           {row.map((col, colIdx) =>
             gameTileButton(dispatch, board, rowIdx, colIdx)
           )}

@@ -1,6 +1,7 @@
 import { Dispatch } from "react";
 import { Action } from "./UseAppState";
 import { Board } from "./Board";
+import TileCSS from "./Tile.module.css";
 
 /**
  * gameTileButton
@@ -33,7 +34,11 @@ export default function gameTileButton(
   };
 
   return (
-    <button onClick={handleClick} onContextMenu={handleClick}>
+    <button
+      onClick={handleClick}
+      onContextMenu={handleClick}
+      className={TileCSS.tile}
+    >
       {renderTile(board, row, col)}
     </button>
   );

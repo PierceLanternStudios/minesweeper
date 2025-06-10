@@ -1,0 +1,8 @@
+.board {
+  display: grid;
+  gap: 4px;
+}
+
+.board_row {
+  display: contents;
+}

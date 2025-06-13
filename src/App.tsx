@@ -4,6 +4,7 @@ import gameTileButton from "./GameTile";
 import useAppState, { Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
 import BoardCSS from "./Board.module.css";
+import SplashCSS from "./Splash.module.css";
 
 /**
  * App
@@ -14,19 +15,72 @@ import BoardCSS from "./Board.module.css";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(state, dispatch, 10);
+  useLoadBoard(state, dispatch);
 
   switch (state.phase) {
     case "pre-game":
       return (
-        <div>
+        <div className={SplashCSS.container}>
+          <h1>Welcome to Minesweeper!</h1>
           <button
+            className={SplashCSS.startButton}
             onClick={() => {
               dispatch({ type: "start-game" });
             }}
           >
             Start Game!
           </button>
+
+          <h3>Settings:</h3>
+          <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+            <div className={SplashCSS.col}>
+              <strong>Board Size:</strong>
+              <strong>Seed:</strong>
+              <strong>Preserve Progress:</strong>
+            </div>
+
+            <div className={SplashCSS.col} style={{ alignItems: "end" }}>
+              <input
+                type="number"
+                value={state.boardSize}
+                max={100}
+                onChange={(newSize) => {
+                  dispatch({
+                    type: "set-size",
+                    size: Math.min(Number(newSize.target.value), 100),
+                  });
+                }}
+              />
+
+              <input
+                type="text"
+                value={state.seed}
+                maxLength={6}
+                onChange={(newSeed) => {
+                  if (
+                    newSeed.target.value.replace(/[^0-9]/, "") ===
+                    newSeed.target.value
+                  )
+                    dispatch({
+                      type: "set-seed",
+                      seed: Number(newSeed.target.value),
+                    });
+                }}
+              />
+
+              <input
+                type="checkbox"
+                checked={state.preserveProgress}
+                onChange={() => {
+                  dispatch({
+                    type: "set-preserve-progress",
+                    shouldPreserve: !state.preserveProgress,
+                  });
+                }}
+              />
+            </div>
+          </div>
+
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );
@@ -45,10 +99,51 @@ function App() {
             Restart
           </button>
           <button
-            onClick={() => dispatch({ type: "set-seed", seed: Math.random() })}
+            onClick={() =>
+              dispatch({
+                type: "set-seed",
+                seed: Math.trunc(Math.random() * 10 ** 6),
+              })
+            }
           >
             Randomize Board
           </button>
+          <input
+            type="number"
+            value={state.boardSize}
+            max={100}
+            onChange={(newSize) => {
+              dispatch({
+                type: "set-size",
+                size: Math.min(Number(newSize.target.value), 100),
+              });
+            }}
+          />
+          <input
+            type="text"
+            value={state.seed}
+            maxLength={6}
+            onChange={(newSeed) => {
+              if (
+                newSeed.target.value.replace(/[^0-9]/, "") ===
+                newSeed.target.value
+              )
+                dispatch({
+                  type: "set-seed",
+                  seed: Number(newSeed.target.value),
+                });
+            }}
+          />
+          <input
+            type="checkbox"
+            checked={state.preserveProgress}
+            onChange={() => {
+              dispatch({
+                type: "set-preserve-progress",
+                shouldPreserve: !state.preserveProgress,
+              });
+            }}
+          />
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );

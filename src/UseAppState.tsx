@@ -6,17 +6,23 @@ export type State =
       phase: "pre-game";
       seed: number;
       board: Board | null;
+      boardSize: number;
+      preserveProgress: boolean;
     }
   | {
       phase: "in-game";
       seed: number;
       board: Board;
+      boardSize: number;
+      preserveProgress: boolean;
     }
   | {
       phase: "post-game";
       playerWin: boolean;
       seed: number;
       board: Board;
+      boardSize: number;
+      preserveProgress: boolean;
     };
 
 export type Action =
@@ -40,6 +46,14 @@ export type Action =
   | {
       type: "set-seed";
       seed: number;
+    }
+  | {
+      type: "set-size";
+      size: number;
+    }
+  | {
+      type: "set-preserve-progress";
+      shouldPreserve: boolean;
     };
 
 /**
@@ -66,11 +80,26 @@ function reducer(state: State, action: Action): State {
         Otherwise:
             - Changes the game to in-game state
     */
-    case "start-game":
+    case "start-game": {
       // no-op if board is not loaded:
       if (state.board === null) return state;
-      return { ...state, phase: "in-game", board: state.board };
 
+      // restart from previous position if preserving progress:
+      if (state.preserveProgress)
+        return { ...state, phase: "in-game", board: state.board };
+
+      // otherwise wipe the display board:
+      return {
+        ...state,
+        phase: "in-game",
+        board: {
+          ...state.board,
+          display: Array.from({ length: state.board.display.length }, () =>
+            Array(state.board?.display.length).fill(-1)
+          ),
+        },
+      };
+    }
     /*
     Start game case. 
     No-Ops if:
@@ -151,7 +180,42 @@ function reducer(state: State, action: Action): State {
         will be lost.
     */
     case "set-seed": {
-      return { ...state, seed: action.seed };
+      console.log(action.seed);
+      return {
+        ...state,
+        seed: action.seed,
+      };
+    }
+
+    /*
+    Set board size case
+    No-Ops if:
+      - Phase is in-game
+
+    Otherwise:
+      - Updates the size of the game board.
+      - This will trigger an immediate re-calculation of
+        the board and all data from the previous board 
+        will be lost.
+    */
+    case "set-size": {
+      if (state.phase === "in-game") return state;
+
+      return { ...state, boardSize: action.size };
+    }
+
+    /*
+    Set board size case
+    No-Ops if:
+      - Phase is in-game
+
+    Otherwise:
+      - sets whether or not to save progress on game loss.
+    */
+    case "set-preserve-progress": {
+      if (state.phase === "in-game") return state;
+
+      return { ...state, preserveProgress: action.shouldPreserve };
     }
   }
 }
@@ -164,7 +228,13 @@ function reducer(state: State, action: Action): State {
  * @returns     The default value of state.
  */
 function getInitialState(): State {
-  return { phase: "pre-game", seed: Math.random(), board: null };
+  return {
+    phase: "pre-game",
+    seed: Math.trunc(Math.random() * 10 ** 6),
+    boardSize: 10,
+    preserveProgress: false,
+    board: null,
+  };
 }
 
 /**

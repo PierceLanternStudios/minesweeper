@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.startButton {
+  padding: 10px 20px;
+  color: white;
+  background-color: orangered;
+  font-size: large;
+  border-radius: 15px;
+  border: 0px;
+  transition: 0.1s ease-in;
+}
+
+.startButton:hover,
+.startButton:focus {
+  scale: 1.1;
+}

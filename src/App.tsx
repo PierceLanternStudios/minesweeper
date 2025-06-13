@@ -14,7 +14,7 @@ import BoardCSS from "./Board.module.css";
  */
 function App() {
   const [state, dispatch] = useAppState();
-  useLoadBoard(state, dispatch, 10);
+  useLoadBoard(state, dispatch);
 
   switch (state.phase) {
     case "pre-game":
@@ -27,6 +27,7 @@ function App() {
           >
             Start Game!
           </button>
+          <input type="number" value={state.boardSize}></input>
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );

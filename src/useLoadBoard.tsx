@@ -17,16 +17,15 @@ const BOMB_FREQUENCY = 0.2;
  * @returns           A hook that can be called to generate a board in state
  *                    from within App.tsx
  */
-export default function useLoadBoard(
-  state: State,
-  dispatch: Dispatch<Action>,
-  size: number
-) {
+export default function useLoadBoard(state: State, dispatch: Dispatch<Action>) {
   return useEffect(() => {
     setTimeout(() => {
-      dispatch({ type: "load-board", board: generateBoard(size, state.seed) });
+      dispatch({
+        type: "load-board",
+        board: generateBoard(state.boardSize, state.seed),
+      });
     }, 500);
-  }, [dispatch, state.seed, size]);
+  }, [dispatch, state.seed, state.boardSize]);
 }
 
 /**

@@ -30,11 +30,27 @@ function App() {
           <input
             type="number"
             value={state.boardSize}
+            max={100}
             onChange={(newSize) => {
               dispatch({
                 type: "set-size",
-                size: Number(newSize.target.value),
+                size: Math.min(Number(newSize.target.value), 100),
               });
+            }}
+          />
+          <input
+            type="text"
+            value={state.seed}
+            maxLength={6}
+            onChange={(newSeed) => {
+              if (
+                newSeed.target.value.replace(/[^0-9]/, "") ===
+                newSeed.target.value
+              )
+                dispatch({
+                  type: "set-seed",
+                  seed: Number(newSeed.target.value),
+                });
             }}
           />
           <pre>{JSON.stringify(state, null, 2)}</pre>

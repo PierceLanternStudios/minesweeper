@@ -158,7 +158,11 @@ function reducer(state: State, action: Action): State {
         will be lost.
     */
     case "set-seed": {
-      return { ...state, seed: action.seed };
+      console.log(action.seed);
+      return {
+        ...state,
+        seed: action.seed,
+      };
     }
 
     /*
@@ -188,7 +192,12 @@ function reducer(state: State, action: Action): State {
  * @returns     The default value of state.
  */
 function getInitialState(): State {
-  return { phase: "pre-game", seed: Math.random(), board: null, boardSize: 10 };
+  return {
+    phase: "pre-game",
+    seed: Math.trunc(Math.random() * 10 ** 6),
+    board: null,
+    boardSize: 10,
+  };
 }
 
 /**

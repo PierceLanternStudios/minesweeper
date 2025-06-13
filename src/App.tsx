@@ -81,10 +81,51 @@ function App() {
             Restart
           </button>
           <button
-            onClick={() => dispatch({ type: "set-seed", seed: Math.random() })}
+            onClick={() =>
+              dispatch({
+                type: "set-seed",
+                seed: Math.trunc(Math.random() * 10 ** 6),
+              })
+            }
           >
             Randomize Board
           </button>
+          <input
+            type="number"
+            value={state.boardSize}
+            max={100}
+            onChange={(newSize) => {
+              dispatch({
+                type: "set-size",
+                size: Math.min(Number(newSize.target.value), 100),
+              });
+            }}
+          />
+          <input
+            type="text"
+            value={state.seed}
+            maxLength={6}
+            onChange={(newSeed) => {
+              if (
+                newSeed.target.value.replace(/[^0-9]/, "") ===
+                newSeed.target.value
+              )
+                dispatch({
+                  type: "set-seed",
+                  seed: Number(newSeed.target.value),
+                });
+            }}
+          />
+          <input
+            type="checkbox"
+            checked={state.preserveProgress}
+            onChange={() => {
+              dispatch({
+                type: "set-preserve-progress",
+                shouldPreserve: !state.preserveProgress,
+              });
+            }}
+          />
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );

@@ -50,6 +50,10 @@ export type Action =
   | {
       type: "set-size";
       size: number;
+    }
+  | {
+      type: "set-preserve-progress";
+      shouldPreserve: boolean;
     };
 
 /**
@@ -198,6 +202,20 @@ function reducer(state: State, action: Action): State {
       if (state.phase === "in-game") return state;
 
       return { ...state, boardSize: action.size };
+    }
+
+    /*
+    Set board size case
+    No-Ops if:
+      - Phase is in-game
+
+    Otherwise:
+      - sets whether or not to save progress on game loss.
+    */
+    case "set-preserve-progress": {
+      if (state.phase === "in-game") return state;
+
+      return { ...state, preserveProgress: action.shouldPreserve };
     }
   }
 }

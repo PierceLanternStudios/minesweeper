@@ -53,6 +53,16 @@ function App() {
                 });
             }}
           />
+          <input
+            type="checkbox"
+            checked={state.preserveProgress}
+            onChange={() => {
+              dispatch({
+                type: "set-preserve-progress",
+                shouldPreserve: !state.preserveProgress,
+              });
+            }}
+          />
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );

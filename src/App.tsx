@@ -27,7 +27,16 @@ function App() {
           >
             Start Game!
           </button>
-          <input type="number" value={state.boardSize}></input>
+          <input
+            type="number"
+            value={state.boardSize}
+            onChange={(newSize) => {
+              dispatch({
+                type: "set-size",
+                size: Number(newSize.target.value),
+              });
+            }}
+          />
           <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );

@@ -43,6 +43,10 @@ export type Action =
   | {
       type: "set-seed";
       seed: number;
+    }
+  | {
+      type: "set-size";
+      size: number;
     };
 
 /**
@@ -155,6 +159,23 @@ function reducer(state: State, action: Action): State {
     */
     case "set-seed": {
       return { ...state, seed: action.seed };
+    }
+
+    /*
+    Set board size case
+    No-Ops if:
+      - Phase is in-game
+
+    Otherwise:
+      - Updates the size of the game board.
+      - This will trigger an immediate re-calculation of
+        the board and all data from the previous board 
+        will be lost.
+    */
+    case "set-size": {
+      if (state.phase === "in-game") return state;
+
+      return { ...state, boardSize: action.size };
     }
   }
 }

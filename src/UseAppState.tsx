@@ -7,12 +7,14 @@ export type State =
       seed: number;
       board: Board | null;
       boardSize: number;
+      preserveProgress: boolean;
     }
   | {
       phase: "in-game";
       seed: number;
       board: Board;
       boardSize: number;
+      preserveProgress: boolean;
     }
   | {
       phase: "post-game";
@@ -20,6 +22,7 @@ export type State =
       seed: number;
       board: Board;
       boardSize: number;
+      preserveProgress: boolean;
     };
 
 export type Action =
@@ -73,11 +76,26 @@ function reducer(state: State, action: Action): State {
         Otherwise:
             - Changes the game to in-game state
     */
-    case "start-game":
+    case "start-game": {
       // no-op if board is not loaded:
       if (state.board === null) return state;
-      return { ...state, phase: "in-game", board: state.board };
 
+      // restart from previous position if preserving progress:
+      if (state.preserveProgress)
+        return { ...state, phase: "in-game", board: state.board };
+
+      // otherwise wipe the display board:
+      return {
+        ...state,
+        phase: "in-game",
+        board: {
+          ...state.board,
+          display: Array.from({ length: state.board.display.length }, () =>
+            Array(state.board?.display.length).fill(-1)
+          ),
+        },
+      };
+    }
     /*
     Start game case. 
     No-Ops if:
@@ -195,8 +213,9 @@ function getInitialState(): State {
   return {
     phase: "pre-game",
     seed: Math.trunc(Math.random() * 10 ** 6),
-    board: null,
     boardSize: 10,
+    preserveProgress: false,
+    board: null,
   };
 }
 

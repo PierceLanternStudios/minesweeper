@@ -5,6 +5,7 @@ import useAppState, { Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
 import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
+import GameplayCSS from "./Gameplay.module.css";
 
 /**
  * App
@@ -21,74 +22,76 @@ function App() {
     case "pre-game":
       return (
         <div className={SplashCSS.container}>
-          <h1>Welcome to Minesweeper!</h1>
-          <button
-            className={SplashCSS.startButton}
-            onClick={() => {
-              dispatch({ type: "start-game" });
-            }}
-          >
-            Start Game!
-          </button>
+          <div className={SplashCSS.controls}>
+            <button
+              className={SplashCSS.startButton}
+              onClick={() => {
+                dispatch({ type: "start-game" });
+              }}
+            >
+              Start Game!
+            </button>
 
-          <h3>Settings:</h3>
-          <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
-            <div className={SplashCSS.col}>
-              <strong>Board Size:</strong>
-              <strong>Seed:</strong>
-              <strong>Preserve Progress:</strong>
-            </div>
+            <div className={SplashCSS.settings}>
+              <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+                <div className={SplashCSS.col}>
+                  <h3>Settings:</h3>
+                  <strong>Board Size:</strong>
+                  <strong>Seed:</strong>
+                  <strong>Preserve Progress:</strong>
+                </div>
 
-            <div className={SplashCSS.col} style={{ alignItems: "end" }}>
-              <input
-                type="number"
-                value={state.boardSize}
-                max={100}
-                onChange={(newSize) => {
-                  dispatch({
-                    type: "set-size",
-                    size: Math.min(Number(newSize.target.value), 100),
-                  });
-                }}
-              />
+                <div className={SplashCSS.col} style={{ alignItems: "end" }}>
+                  <h3>Values:</h3>
+                  <input
+                    type="number"
+                    value={state.boardSize}
+                    max={100}
+                    onChange={(newSize) => {
+                      dispatch({
+                        type: "set-size",
+                        size: Math.min(Number(newSize.target.value), 100),
+                      });
+                    }}
+                  />
 
-              <input
-                type="text"
-                value={state.seed}
-                maxLength={6}
-                onChange={(newSeed) => {
-                  if (
-                    newSeed.target.value.replace(/[^0-9]/, "") ===
-                    newSeed.target.value
-                  )
-                    dispatch({
-                      type: "set-seed",
-                      seed: Number(newSeed.target.value),
-                    });
-                }}
-              />
+                  <input
+                    type="text"
+                    value={state.seed}
+                    maxLength={6}
+                    onChange={(newSeed) => {
+                      if (
+                        newSeed.target.value.replace(/[^0-9]/, "") ===
+                        newSeed.target.value
+                      )
+                        dispatch({
+                          type: "set-seed",
+                          seed: Number(newSeed.target.value),
+                        });
+                    }}
+                  />
 
-              <input
-                type="checkbox"
-                checked={state.preserveProgress}
-                onChange={() => {
-                  dispatch({
-                    type: "set-preserve-progress",
-                    shouldPreserve: !state.preserveProgress,
-                  });
-                }}
-              />
+                  <input
+                    type="checkbox"
+                    checked={state.preserveProgress}
+                    onChange={() => {
+                      dispatch({
+                        type: "set-preserve-progress",
+                        shouldPreserve: !state.preserveProgress,
+                      });
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-
-          <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );
     case "in-game":
       return (
-        <div>
+        <div className={GameplayCSS.container}>
+          <div className={GameplayCSS.top_stats}>Minesweeper</div>
           <div>{renderBoard(state.board, dispatch)}</div>
-          <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );
     case "post-game":
@@ -144,7 +147,6 @@ function App() {
               });
             }}
           />
-          <pre>{JSON.stringify(state, null, 2)}</pre>
         </div>
       );
   }

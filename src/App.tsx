@@ -93,12 +93,16 @@ function App() {
     case "in-game":
       return (
         <div className={GameplayCSS.container}>
-          <div className={GameplayCSS.top_stats}>
-            {"Time: "}
-            {formatTime(state.timerVal)}
+          <div className={GameplayCSS.stack}>
+            <div className={GameplayCSS.top_stats}>
+              <strong style={{ marginRight: "auto" }}>Minesweeper</strong>
+              <strong style={{ marginLeft: "auto" }}>
+                Time: {formatTime(state.timerVal)}
+              </strong>
+            </div>
+            <div>{renderBoard(state.board, dispatch)}</div>
+            <div className={GameplayCSS.bottom}></div>
           </div>
-          <div>{renderBoard(state.board, dispatch)}</div>
-          <div className={GameplayCSS.bottom}></div>
         </div>
       );
     case "post-game":

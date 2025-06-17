@@ -8,13 +8,17 @@ export type State =
       board: Board | null;
       boardSize: number;
       preserveProgress: boolean;
+      timerOn: boolean;
+      timerVal: number;
     }
   | {
       phase: "in-game";
       seed: number;
       board: Board;
       boardSize: number;
+      timerOn: boolean;
       preserveProgress: boolean;
+      timerVal: number;
     }
   | {
       phase: "post-game";
@@ -23,6 +27,8 @@ export type State =
       board: Board;
       boardSize: number;
       preserveProgress: boolean;
+      timerOn: boolean;
+      timerVal: number;
     };
 
 export type Action =
@@ -42,6 +48,16 @@ export type Action =
       type: "flag-tile";
       row: number;
       col: number;
+    }
+  | {
+      type: "uptick-timer";
+    }
+  | {
+      type: "clear-timer";
+    }
+  | {
+      type: "toggle-timer";
+      timerState: boolean;
     }
   | {
       type: "set-seed";
@@ -217,6 +233,31 @@ function reducer(state: State, action: Action): State {
 
       return { ...state, preserveProgress: action.shouldPreserve };
     }
+
+    /*
+    Uptick timer case
+
+    Upticks the timer value by one when called.
+    */
+    case "uptick-timer": {
+      return { ...state, timerVal: state.timerVal + 1 };
+    }
+
+    /*
+    clear timer case
+
+    Resets the value of the timer to 0.
+    */
+    case "clear-timer":
+      return { ...state, timerVal: 0 };
+
+    /*
+    toggle timer case
+
+    Enables or Disables the timer
+    */
+    case "toggle-timer":
+      return { ...state, timerOn: action.timerState };
   }
 }
 
@@ -234,6 +275,8 @@ function getInitialState(): State {
     boardSize: 10,
     preserveProgress: false,
     board: null,
+    timerOn: false,
+    timerVal: 0,
   };
 }
 

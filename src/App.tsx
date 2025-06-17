@@ -6,6 +6,7 @@ import useLoadBoard from "./useLoadBoard";
 import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
 import GameplayCSS from "./Gameplay.module.css";
+import UseTimer from "./UseTimer";
 
 /**
  * App
@@ -17,6 +18,7 @@ import GameplayCSS from "./Gameplay.module.css";
 function App() {
   const [state, dispatch] = useAppState();
   useLoadBoard(state, dispatch);
+  UseTimer(state, dispatch);
 
   switch (state.phase) {
     case "pre-game":

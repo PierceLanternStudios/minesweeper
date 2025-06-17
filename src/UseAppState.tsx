@@ -8,13 +8,17 @@ export type State =
       board: Board | null;
       boardSize: number;
       preserveProgress: boolean;
+      timerOn: boolean;
+      timerVal: number;
     }
   | {
       phase: "in-game";
       seed: number;
       board: Board;
       boardSize: number;
+      timerOn: boolean;
       preserveProgress: boolean;
+      timerVal: number;
     }
   | {
       phase: "post-game";
@@ -23,6 +27,8 @@ export type State =
       board: Board;
       boardSize: number;
       preserveProgress: boolean;
+      timerOn: boolean;
+      timerVal: number;
     };
 
 export type Action =
@@ -42,6 +48,9 @@ export type Action =
       type: "flag-tile";
       row: number;
       col: number;
+    }
+  | {
+      type: "uptick-timer";
     }
   | {
       type: "set-seed";
@@ -86,7 +95,13 @@ function reducer(state: State, action: Action): State {
 
       // restart from previous position if preserving progress:
       if (state.preserveProgress)
-        return { ...state, phase: "in-game", board: state.board };
+        return {
+          ...state,
+          phase: "in-game",
+          board: state.board,
+          timerOn: true,
+          timerVal: 0,
+        };
 
       // otherwise wipe the display board:
       return {
@@ -98,6 +113,8 @@ function reducer(state: State, action: Action): State {
             Array(state.board?.display.length).fill(-1)
           ),
         },
+        timerOn: true,
+        timerVal: 0,
       };
     }
     /*
@@ -125,7 +142,12 @@ function reducer(state: State, action: Action): State {
       if (state.board.flags[action.row][action.col]) return state;
       //check if player lost the game
       else if (state.board.mines[action.row][action.col])
-        return { ...state, phase: "post-game", playerWin: false };
+        return {
+          ...state,
+          phase: "post-game",
+          playerWin: false,
+          timerOn: false,
+        };
       // otherwise reveal the tile:
       else
         return {
@@ -162,6 +184,7 @@ function reducer(state: State, action: Action): State {
           phase: "post-game",
           board: flaggedBoard,
           playerWin: true,
+          timerOn: false,
         };
 
       // otherwise flag the tile and move on
@@ -217,6 +240,15 @@ function reducer(state: State, action: Action): State {
 
       return { ...state, preserveProgress: action.shouldPreserve };
     }
+
+    /*
+    Uptick timer case
+
+    Upticks the timer value by one when called.
+    */
+    case "uptick-timer": {
+      return { ...state, timerVal: state.timerVal + 1 };
+    }
   }
 }
 
@@ -234,6 +266,8 @@ function getInitialState(): State {
     boardSize: 10,
     preserveProgress: false,
     board: null,
+    timerOn: false,
+    timerVal: 0,
   };
 }
 

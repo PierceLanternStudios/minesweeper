@@ -92,6 +92,7 @@ function App() {
         <div className={GameplayCSS.container}>
           <div className={GameplayCSS.top_stats}>Minesweeper</div>
           <div>{renderBoard(state.board, dispatch)}</div>
+          <div className={GameplayCSS.bottom}></div>
         </div>
       );
     case "post-game":

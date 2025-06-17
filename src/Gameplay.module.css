@@ -7,6 +7,8 @@
   height: 100vh;
   overflow: hidden;
   background-size: 100%;
+  column-gap: 30px;
+  padding: 30px;
 }
 
 .board_container {
@@ -16,6 +18,13 @@
 
 .top_stats {
   display: flex;
-  justify-self: flex-start;
+  margin-bottom: auto;
   color: white;
+  flex: 1;
+  font-family: monospace;
+  font-size: x-large;
+}
+
+.bottom {
+  flex: 1;
 }

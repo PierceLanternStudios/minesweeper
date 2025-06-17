@@ -53,13 +53,6 @@ export type Action =
       type: "uptick-timer";
     }
   | {
-      type: "clear-timer";
-    }
-  | {
-      type: "toggle-timer";
-      timerState: boolean;
-    }
-  | {
       type: "set-seed";
       seed: number;
     }
@@ -102,7 +95,13 @@ function reducer(state: State, action: Action): State {
 
       // restart from previous position if preserving progress:
       if (state.preserveProgress)
-        return { ...state, phase: "in-game", board: state.board };
+        return {
+          ...state,
+          phase: "in-game",
+          board: state.board,
+          timerOn: true,
+          timerVal: 0,
+        };
 
       // otherwise wipe the display board:
       return {
@@ -114,6 +113,8 @@ function reducer(state: State, action: Action): State {
             Array(state.board?.display.length).fill(-1)
           ),
         },
+        timerOn: true,
+        timerVal: 0,
       };
     }
     /*
@@ -141,7 +142,12 @@ function reducer(state: State, action: Action): State {
       if (state.board.flags[action.row][action.col]) return state;
       //check if player lost the game
       else if (state.board.mines[action.row][action.col])
-        return { ...state, phase: "post-game", playerWin: false };
+        return {
+          ...state,
+          phase: "post-game",
+          playerWin: false,
+          timerOn: false,
+        };
       // otherwise reveal the tile:
       else
         return {
@@ -178,6 +184,7 @@ function reducer(state: State, action: Action): State {
           phase: "post-game",
           board: flaggedBoard,
           playerWin: true,
+          timerOn: false,
         };
 
       // otherwise flag the tile and move on
@@ -242,22 +249,6 @@ function reducer(state: State, action: Action): State {
     case "uptick-timer": {
       return { ...state, timerVal: state.timerVal + 1 };
     }
-
-    /*
-    clear timer case
-
-    Resets the value of the timer to 0.
-    */
-    case "clear-timer":
-      return { ...state, timerVal: 0 };
-
-    /*
-    toggle timer case
-
-    Enables or Disables the timer
-    */
-    case "toggle-timer":
-      return { ...state, timerOn: action.timerState };
   }
 }
 

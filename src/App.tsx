@@ -7,6 +7,7 @@ import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
 import GameplayCSS from "./Gameplay.module.css";
 import UseTimer from "./UseTimer";
+import { formatTime } from "./Utilities";
 
 /**
  * App
@@ -92,7 +93,10 @@ function App() {
     case "in-game":
       return (
         <div className={GameplayCSS.container}>
-          <div className={GameplayCSS.top_stats}>Minesweeper</div>
+          <div className={GameplayCSS.top_stats}>
+            {"Time: "}
+            {formatTime(state.timerVal)}
+          </div>
           <div>{renderBoard(state.board, dispatch)}</div>
           <div className={GameplayCSS.bottom}></div>
         </div>
@@ -150,6 +154,7 @@ function App() {
               });
             }}
           />
+          Time: {formatTime(state.timerVal)}
         </div>
       );
   }

@@ -16,5 +16,5 @@ export default function UseTimer(
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-  }, [state.timerOn]);
+  }, [dispatch, state.timerOn]);
 }

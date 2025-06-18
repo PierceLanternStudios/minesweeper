@@ -9,6 +9,8 @@ import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
 import GameplayCSS from "./Gameplay.module.css";
 import PostgameCSS from "./Postgame.module.css";
+import CheckboxCSS from "./Checkbox.module.css";
+import React from "react";
 
 /**
  * App
@@ -191,20 +193,41 @@ function settingsModule(state: State, dispatch: React.Dispatch<Action>) {
         </div>
         <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
           Preserve Progress:
-          <input
-            type="checkbox"
-            style={{ marginLeft: "auto" }}
-            checked={state.preserveProgress}
-            onChange={() => {
-              dispatch({
-                type: "set-preserve-progress",
-                shouldPreserve: !state.preserveProgress,
-              });
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "auto",
             }}
-          />
+          >
+            {checkbox(state, dispatch)}
+          </span>
         </div>
       </div>
     </div>
+  );
+}
+
+function checkbox(state: State, dispatch: React.Dispatch<Action>) {
+  return (
+    <label className={CheckboxCSS.checkbox}>
+      <input
+        type="checkbox"
+        style={{
+          marginLeft: "auto",
+          alignSelf: "center",
+          alignItems: "center",
+        }}
+        checked={state.preserveProgress}
+        onChange={() => {
+          dispatch({
+            type: "set-preserve-progress",
+            shouldPreserve: !state.preserveProgress,
+          });
+        }}
+      />
+      <span className={CheckboxCSS.checkmark}></span>
+    </label>
   );
 }
 export default App;

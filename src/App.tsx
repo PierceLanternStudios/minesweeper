@@ -3,11 +3,12 @@ import { Board } from "./Board";
 import gameTileButton from "./GameTile";
 import useAppState, { Action } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
+import UseTimer from "./UseTimer";
+import { formatTime } from "./Utilities";
 import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
 import GameplayCSS from "./Gameplay.module.css";
-import UseTimer from "./UseTimer";
-import { formatTime } from "./Utilities";
+import PostgameCSS from "./Postgame.module.css";
 
 /**
  * App
@@ -115,7 +116,7 @@ function App() {
       );
     case "post-game":
       return (
-        <div>
+        <div className={PostgameCSS.container}>
           <h3>{state.playerWin ? "You Won!" : "You Lost!"}</h3>
           <button onClick={() => dispatch({ type: "start-game" })}>
             Restart

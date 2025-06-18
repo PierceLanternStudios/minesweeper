@@ -101,7 +101,15 @@ function App() {
               </strong>
             </div>
             <div>{renderBoard(state.board, dispatch)}</div>
-            <div className={GameplayCSS.bottom}></div>
+            <div className={GameplayCSS.bottom}>
+              Seed: {state.seed}{" "}
+              <button
+                className={GameplayCSS.end_button}
+                onClick={() => dispatch({ type: "end-game" })}
+              >
+                End Game
+              </button>
+            </div>
           </div>
         </div>
       );

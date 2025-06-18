@@ -50,6 +50,9 @@ export type Action =
       col: number;
     }
   | {
+      type: "end-game";
+    }
+  | {
       type: "uptick-timer";
     }
   | {
@@ -189,6 +192,20 @@ function reducer(state: State, action: Action): State {
 
       // otherwise flag the tile and move on
       return { ...state, board: flagTile(state.board, action.row, action.col) };
+    }
+
+    /*
+    end game case
+    No-Ops if:
+      - Phase is not in-game
+
+    Otherwise:
+      - Immediately ends the game and moves to the postgame screen
+        as a loss. 
+    */
+    case "end-game": {
+      if (state.phase !== "in-game") return state;
+      return { ...state, phase: "post-game", playerWin: false };
     }
 
     /*

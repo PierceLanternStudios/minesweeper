@@ -154,19 +154,13 @@ function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
 function settingsModule(state: State, dispatch: React.Dispatch<Action>) {
   return (
     <div className={SplashCSS.settings}>
-      <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
-        <div className={SplashCSS.col}>
-          <h3>Settings:</h3>
-          <strong>Board Size:</strong>
-          <strong>Seed:</strong>
-          <strong>Preserve Progress:</strong>
-        </div>
-
-        <div className={SplashCSS.col} style={{ alignItems: "end" }}>
-          <h3>Values:</h3>
+      <div className={SplashCSS.col}>
+        <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+          Board Size:
           <input
             type="number"
             value={state.boardSize}
+            style={{ marginLeft: "auto" }}
             max={100}
             onChange={(newSize) => {
               dispatch({
@@ -175,10 +169,13 @@ function settingsModule(state: State, dispatch: React.Dispatch<Action>) {
               });
             }}
           />
-
+        </div>
+        <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+          Seed:
           <input
             type="text"
             value={state.seed}
+            style={{ marginLeft: "auto" }}
             maxLength={6}
             onChange={(newSeed) => {
               if (
@@ -191,9 +188,12 @@ function settingsModule(state: State, dispatch: React.Dispatch<Action>) {
                 });
             }}
           />
-
+        </div>
+        <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+          Preserve Progress:
           <input
             type="checkbox"
+            style={{ marginLeft: "auto" }}
             checked={state.preserveProgress}
             onChange={() => {
               dispatch({

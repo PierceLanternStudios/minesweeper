@@ -23,6 +23,7 @@ body {
   width: fit-content;
   font-family: monospace;
   font-size: xx-large;
+  row-gap: 20px;
 }
 
 .row {

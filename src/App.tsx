@@ -208,6 +208,14 @@ function settingsModule(state: State, dispatch: React.Dispatch<Action>) {
   );
 }
 
+/**
+ * checkbox
+ *
+ * Renders a styled checkbox component for toggling the "preserve progress" state.
+ * @param state       The current application state, containing the `preserveProgress` flag.
+ * @param dispatch    The dispatch function to update the application state.
+ * @returns           A JSX element representing the checkbox UI.
+ */
 function checkbox(state: State, dispatch: React.Dispatch<Action>) {
   return (
     <label className={CheckboxCSS.checkbox}>

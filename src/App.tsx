@@ -65,22 +65,43 @@ function App() {
     case "post-game":
       return (
         <div className={PostgameCSS.container}>
-          <h3>{state.playerWin ? "You Won!" : "You Lost!"}</h3>
-          <button onClick={() => dispatch({ type: "start-game" })}>
-            Restart
-          </button>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "set-seed",
-                seed: Math.trunc(Math.random() * 10 ** 6),
-              })
-            }
-          >
-            Randomize Board
-          </button>
-          Time: {formatTime(state.timerVal)}
-          {settingsModule(state, dispatch)}
+          <div className={PostgameCSS.stack}>
+            <h1>{state.playerWin ? "You Won!" : "You Lost!"}</h1>
+            <div className={PostgameCSS.row}>
+              <p>
+                Time: <strong>{formatTime(state.timerVal)}</strong>
+              </p>
+              <p
+                style={{
+                  marginLeft: "auto",
+                  alignItems: "flex-end",
+                }}
+              >
+                Seed: <strong>{state.seed}</strong>
+              </p>
+            </div>
+            <div className={PostgameCSS.row}>
+              <button
+                className={PostgameCSS.button}
+                onClick={() => dispatch({ type: "start-game" })}
+              >
+                Restart
+              </button>
+              <button
+                className={PostgameCSS.button}
+                onClick={() =>
+                  dispatch({
+                    type: "set-seed",
+                    seed: Math.trunc(Math.random() * 10 ** 6),
+                  })
+                }
+              >
+                Randomize Board
+              </button>
+            </div>
+
+            {settingsModule(state, dispatch)}
+          </div>
         </div>
       );
   }

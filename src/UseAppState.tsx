@@ -210,7 +210,7 @@ function reducer(state: State, action: Action): State {
     */
     case "end-game": {
       if (state.phase !== "in-game") return state;
-      return { ...state, phase: "post-game", playerWin: false };
+      return { ...state, phase: "post-game", playerWin: false, timerOn: false };
     }
 
     /*

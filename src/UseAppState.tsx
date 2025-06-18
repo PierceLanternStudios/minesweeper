@@ -90,7 +90,10 @@ function reducer(state: State, action: Action): State {
             - Board is not loaded
 
         Otherwise:
-            - Changes the game to in-game state
+            - Changes the game to in-game state and starts the game.
+            - If preserve-progress is on and there is progress already
+              made, this will preserve that progress. Otherwise, the 
+              board is reset.
     */
     case "start-game": {
       // no-op if board is not loaded:
@@ -103,7 +106,6 @@ function reducer(state: State, action: Action): State {
           phase: "in-game",
           board: state.board,
           timerOn: true,
-          timerVal: 0,
         };
 
       // otherwise wipe the display board:
@@ -114,6 +116,9 @@ function reducer(state: State, action: Action): State {
           ...state.board,
           display: Array.from({ length: state.board.display.length }, () =>
             Array(state.board?.display.length).fill(-1)
+          ),
+          flags: Array.from({ length: state.board.flags.length }, () =>
+            Array(state.board?.flags.length).fill(false)
           ),
         },
         timerOn: true,

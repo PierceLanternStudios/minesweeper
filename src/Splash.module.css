@@ -18,6 +18,8 @@ body {
   display: flex;
   flex-direction: row;
   column-gap: 20px;
+  align-items: center;
+  justify-content: center;
 }
 
 .col {
@@ -54,4 +56,5 @@ body {
 .startButton:hover,
 .startButton:focus {
   scale: 1.1;
+  background-color: red;
 }

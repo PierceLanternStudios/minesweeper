@@ -1,13 +1,16 @@
 import "./App.css";
 import { Board } from "./Board";
 import gameTileButton from "./GameTile";
-import useAppState, { Action } from "./UseAppState";
+import useAppState, { Action, State } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
+import UseTimer from "./UseTimer";
+import { formatTime } from "./Utilities";
 import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
 import GameplayCSS from "./Gameplay.module.css";
-import UseTimer from "./UseTimer";
-import { formatTime } from "./Utilities";
+import PostgameCSS from "./Postgame.module.css";
+import CheckboxCSS from "./Checkbox.module.css";
+import React from "react";
 
 /**
  * App
@@ -34,59 +37,7 @@ function App() {
             >
               Start Game!
             </button>
-
-            <div className={SplashCSS.settings}>
-              <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
-                <div className={SplashCSS.col}>
-                  <h3>Settings:</h3>
-                  <strong>Board Size:</strong>
-                  <strong>Seed:</strong>
-                  <strong>Preserve Progress:</strong>
-                </div>
-
-                <div className={SplashCSS.col} style={{ alignItems: "end" }}>
-                  <h3>Values:</h3>
-                  <input
-                    type="number"
-                    value={state.boardSize}
-                    max={100}
-                    onChange={(newSize) => {
-                      dispatch({
-                        type: "set-size",
-                        size: Math.min(Number(newSize.target.value), 100),
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={state.seed}
-                    maxLength={6}
-                    onChange={(newSeed) => {
-                      if (
-                        newSeed.target.value.replace(/[^0-9]/, "") ===
-                        newSeed.target.value
-                      )
-                        dispatch({
-                          type: "set-seed",
-                          seed: Number(newSeed.target.value),
-                        });
-                    }}
-                  />
-
-                  <input
-                    type="checkbox"
-                    checked={state.preserveProgress}
-                    onChange={() => {
-                      dispatch({
-                        type: "set-preserve-progress",
-                        shouldPreserve: !state.preserveProgress,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+            {settingsModule(state, dispatch)}
           </div>
         </div>
       );
@@ -101,64 +52,58 @@ function App() {
               </strong>
             </div>
             <div>{renderBoard(state.board, dispatch)}</div>
-            <div className={GameplayCSS.bottom}></div>
+            <div className={GameplayCSS.bottom}>
+              Seed: {state.seed}{" "}
+              <button
+                className={GameplayCSS.end_button}
+                onClick={() => dispatch({ type: "end-game" })}
+              >
+                End Game
+              </button>
+            </div>
           </div>
         </div>
       );
     case "post-game":
       return (
-        <div>
-          <h3>{state.playerWin ? "You Won!" : "You Lost!"}</h3>
-          <button onClick={() => dispatch({ type: "start-game" })}>
-            Restart
-          </button>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "set-seed",
-                seed: Math.trunc(Math.random() * 10 ** 6),
-              })
-            }
-          >
-            Randomize Board
-          </button>
-          <input
-            type="number"
-            value={state.boardSize}
-            max={100}
-            onChange={(newSize) => {
-              dispatch({
-                type: "set-size",
-                size: Math.min(Number(newSize.target.value), 100),
-              });
-            }}
-          />
-          <input
-            type="text"
-            value={state.seed}
-            maxLength={6}
-            onChange={(newSeed) => {
-              if (
-                newSeed.target.value.replace(/[^0-9]/, "") ===
-                newSeed.target.value
-              )
-                dispatch({
-                  type: "set-seed",
-                  seed: Number(newSeed.target.value),
-                });
-            }}
-          />
-          <input
-            type="checkbox"
-            checked={state.preserveProgress}
-            onChange={() => {
-              dispatch({
-                type: "set-preserve-progress",
-                shouldPreserve: !state.preserveProgress,
-              });
-            }}
-          />
-          Time: {formatTime(state.timerVal)}
+        <div className={PostgameCSS.container}>
+          <div className={PostgameCSS.stack}>
+            <h1>{state.playerWin ? "You Won!" : "You Lost!"}</h1>
+            <div className={PostgameCSS.row}>
+              <p>
+                Time: <strong>{formatTime(state.timerVal)}</strong>
+              </p>
+              <p
+                style={{
+                  marginLeft: "auto",
+                  alignItems: "flex-end",
+                }}
+              >
+                Seed: <strong>{state.seed}</strong>
+              </p>
+            </div>
+            <div className={PostgameCSS.row}>
+              <button
+                className={PostgameCSS.button}
+                onClick={() => dispatch({ type: "start-game" })}
+              >
+                Restart
+              </button>
+              <button
+                className={PostgameCSS.button}
+                onClick={() =>
+                  dispatch({
+                    type: "set-seed",
+                    seed: Math.trunc(Math.random() * 10 ** 6),
+                  })
+                }
+              >
+                Randomize Board
+              </button>
+            </div>
+
+            {settingsModule(state, dispatch)}
+          </div>
         </div>
       );
   }
@@ -192,6 +137,105 @@ function renderBoard(board: Board, dispatch: React.Dispatch<Action>) {
         </div>
       ))}
     </div>
+  );
+}
+
+/**
+ * settingsModule
+ *
+ * A helper function that returns the settings module box, to clean up code
+ * in App().
+ * @param state       A reference to the main game state.
+ * @param dispatch    A reference to the associated dispatch function, for
+ *                    use in changing the state.
+ * @returns           styled markdown for the settings collection.
+ * @note              This section relies on the style rules from
+ *                    Splash.module.css.
+ *
+ */
+function settingsModule(state: State, dispatch: React.Dispatch<Action>) {
+  return (
+    <div className={SplashCSS.settings}>
+      <div className={SplashCSS.col}>
+        <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+          Board Size:
+          <input
+            type="number"
+            value={state.boardSize}
+            style={{ marginLeft: "auto" }}
+            max={100}
+            onChange={(newSize) => {
+              dispatch({
+                type: "set-size",
+                size: Math.min(Number(newSize.target.value), 100),
+              });
+            }}
+          />
+        </div>
+        <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+          Seed:
+          <input
+            type="text"
+            value={state.seed}
+            style={{ marginLeft: "auto" }}
+            maxLength={6}
+            onChange={(newSeed) => {
+              if (
+                newSeed.target.value.replace(/[^0-9]/, "") ===
+                newSeed.target.value
+              )
+                dispatch({
+                  type: "set-seed",
+                  seed: Number(newSeed.target.value),
+                });
+            }}
+          />
+        </div>
+        <div className={SplashCSS.row} style={{ columnGap: "100px" }}>
+          Preserve Progress:
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "auto",
+            }}
+          >
+            {checkbox(state, dispatch)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * checkbox
+ *
+ * Renders a styled checkbox component for toggling the "preserve progress" state.
+ * @param state       The current application state, containing the `preserveProgress` flag.
+ * @param dispatch    The dispatch function to update the application state.
+ * @returns           A JSX element representing the checkbox UI.
+ */
+function checkbox(state: State, dispatch: React.Dispatch<Action>) {
+  return (
+    <label className={CheckboxCSS.checkbox}>
+      <input
+        type="checkbox"
+        style={{
+          marginLeft: "auto",
+          alignSelf: "center",
+          alignItems: "center",
+        }}
+        checked={state.preserveProgress}
+        onChange={() => {
+          dispatch({
+            type: "set-preserve-progress",
+            shouldPreserve: !state.preserveProgress,
+          });
+        }}
+      />
+      <span className={CheckboxCSS.checkmark}></span>
+    </label>
   );
 }
 export default App;

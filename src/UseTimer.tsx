@@ -1,7 +1,7 @@
 import { State, Action } from "./UseAppState";
 import React from "react";
 
-export default function UseTimer(
+export default function useTimer(
   state: State,
   dispatch: React.Dispatch<Action>
 ) {

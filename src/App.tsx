@@ -3,7 +3,7 @@ import { Board } from "./Board";
 import gameTileButton from "./GameTile";
 import useAppState, { Action, State } from "./UseAppState";
 import useLoadBoard from "./useLoadBoard";
-import UseTimer from "./UseTimer";
+import useTimer from "./UseTimer";
 import { formatTime } from "./Utilities";
 import BoardCSS from "./Board.module.css";
 import SplashCSS from "./Splash.module.css";
@@ -22,7 +22,7 @@ import React from "react";
 function App() {
   const [state, dispatch] = useAppState();
   useLoadBoard(state, dispatch);
-  UseTimer(state, dispatch);
+  useTimer(state, dispatch);
 
   switch (state.phase) {
     case "pre-game":
